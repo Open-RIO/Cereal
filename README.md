@@ -13,6 +13,14 @@ WPILib's implementation was designed to use one (1) Serial Port per interface (o
 ### Independence
 Toast is modular. WPILib is not. See the problem yet? WPILib's Serial Port implementation, while straight forward, just plain won't work for modules. If 2 modules try to grab the same serial port, it turns into a race condition of 'Who can read from the port first gets the data'. This ends up in a mangled stream of data that can cause issues with multiple serial ports acting at once. To fix this, we give each module it's own instance of a Serial Port if it wants one. When data is received on the Serial Port, it is duplicated into each module's listener. This allows each module to get the FULL stream of data from the Serial Port. Everyone's happy.  
 
+# How do I get it?
+Modify your ``` build.gradle ``` to represent the following. Note that the ``` dependencies { } ``` block probably already exists.
+```groovy
+dependencies {
+  compile group: 'jaci.openrio.cereal', name: 'Cereal', version: '+'
+}
+```
+
 # Okay, how steep's the learning curve?
 About as steep as a nicely paved road. Let's get started.  
 First, register your Serial Port.

@@ -22,7 +22,23 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
+def mavenLoaded = true
+
+try {
+  ext.mavenProps = file "../maven.properties"
+  mavenProps.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.mavenProps = new ConfigSlurper().parse prop
+  }
+} catch (Exception e) {
+  println "Could not load Maven Properties... You are not a developer!"
+  mavenLoaded = false
+}
+
 archivesBaseName = "Cereal"
+version = "0.1.0"
+group = "jaci.openrio.cereal"
 
 repositories {
   maven {
@@ -33,6 +49,7 @@ repositories {
 
 configurations {
 	buildJars
+	deployerJars
 }
 
 gradlerio.team = "5333"                                   //Your FRC team number (e.g. 5333 for team 'Can't C#', or 47 for Chief Delphi)
@@ -43,10 +60,42 @@ dependencies {
   compile group: 'jaci.openrio.toast', name: 'Toast', version: '+'    //Change this line to update Toast
   compile group: 'org.scream3r', name: 'jssc', version: '+'
   buildJars group: 'org.scream3r', name: 'jssc', version: '+'
+  deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
 
 jar {
 	from configurations.buildJars.collect {
 		it.isDirectory() ? it : zipTree(it)
 	}
+}
+
+task src(type: Jar) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives src
+}
+
+uploadArchives {
+  if (mavenLoaded) {
+    repositories.mavenDeployer {
+      configuration = configurations.deployerJars
+      repository(url: mavenProps.jaci.url) {
+        authentication(userName: mavenProps.jaci.user, password: mavenProps.jaci.auth)
+      }
+
+      pom {
+        groupId = project.group
+              version = project.version
+              artifactId = project.archivesBaseName
+              project {
+                  name project.archivesBaseName
+                  packaging 'jar'
+                  description 'Network Delegates '
+              }
+      }
+    }
+  }
 }
