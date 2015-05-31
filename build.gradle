@@ -37,7 +37,7 @@ try {
 }
 
 archivesBaseName = "Cereal"
-version = "0.1.0"
+version = "0.1.1"
 group = "jaci.openrio.cereal"
 
 repositories {
@@ -58,6 +58,8 @@ gradlerio.deployFile = "toast/modules/${archivesBaseName}"
 
 dependencies {
   compile group: 'jaci.openrio.toast', name: 'Toast', version: '+'    //Change this line to update Toast
+  compile group: 'jaci.openrio.droid', name: 'ToastDroid', version: '+'
+  
   compile group: 'org.scream3r', name: 'jssc', version: '+'
   buildJars group: 'org.scream3r', name: 'jssc', version: '+'
   deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'

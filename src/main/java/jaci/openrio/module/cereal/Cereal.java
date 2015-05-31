@@ -1,5 +1,6 @@
 package jaci.openrio.module.cereal;
 
+import jaci.openrio.toast.core.loader.annotation.Branch;
 import jaci.openrio.toast.lib.crash.CrashHandler;
 import jaci.openrio.toast.lib.log.Logger;
 import jaci.openrio.toast.lib.module.ToastModule;
@@ -24,6 +25,7 @@ import java.util.List;
  *
  * @author Jaci
  */
+@Branch(branch = "jaci.openrio.module.cereal.addon.ToastDroidHandler", dependency = "ToastDroid", method = "toast_droid")
 public class Cereal extends ToastModule {
 
     static List<String> ports;
@@ -39,7 +41,7 @@ public class Cereal extends ToastModule {
 
     @Override
     public String getModuleVersion() {
-        return "0.1.0";
+        return "0.1.1";
     }
 
     @Override
